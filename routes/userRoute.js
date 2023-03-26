@@ -34,8 +34,8 @@ const profilePhotoResize = async (req, res, next) => {
 
 userRoute.post(
   "/create",
-  upload.single("image"),
-  profilePhotoResize,
+  // upload.single("image"),
+  // profilePhotoResize,
   createAction
 );
 userRoute.put(
