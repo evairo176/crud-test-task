@@ -17,7 +17,7 @@ const createAction = expressAsyncHandler(async (req, res) => {
       age: 18,
       phone: "08182912819",
       education: "D3 teknik informatika",
-      profilePhoto: req.file.filename,
+      // profilePhoto: req.file.filename,
     });
 
     res.json({
