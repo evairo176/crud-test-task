@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "name": "crud-tes",
   "builds": [
     {
       "src": "./server.js",
