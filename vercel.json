@@ -1,5 +1,17 @@
 {
   "version": 2,
   "name": "crud-tes",
-  "rewrites": [{ "source": "/api/(.*)", "destination": "/api" }]
+  "builds": [
+    {
+      "src": "./server.js",
+      "use": "@now/node-server"
+    }
+  ],
+  "routes": [
+    { "handle": "filesystem" },
+    {
+      "src": "/.*",
+      "dest": "server.js"
+    }
+  ]
 }
