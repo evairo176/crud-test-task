@@ -2,12 +2,15 @@ const expressAsyncHandler = require("express-async-handler");
 const User = require("../model/User");
 const validationId = require("../utils/validationId");
 const fs = require("fs");
+const cloudinaryUploadImg = require("../utils/cloudinary");
 
 //----------------------------------------------
 // create user
 //----------------------------------------------
 const createAction = expressAsyncHandler(async (req, res) => {
   // 1. get the path to img
+
+  const imgUpload = await cloudinaryUploadImg(req.file.path);
 
   try {
     const user = await User.create({
@@ -17,7 +20,7 @@ const createAction = expressAsyncHandler(async (req, res) => {
       age: 18,
       phone: "08182912819",
       education: "D3 teknik informatika",
-      // profilePhoto: req.file.filename,
+      profilePhoto: JSON.stringify(imgUpload),
     });
 
     res.json({

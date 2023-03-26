@@ -1,22 +1,55 @@
-import path from "path";
 const multer = require("multer");
+const sharp = require("sharp");
+const path = require("path");
 
-const imageFilter = (req, file, cb) => {
-  if (file.mimetype.startsWith("image")) {
+const photoUpload = multer({
+  storage: multer.diskStorage({}),
+  fileFilter: (req, file, cb) => {
+    let ext = path.extname(file.originalname);
+    if (ext !== ".jpg" && ext !== ".jpeg" && ext !== ".png") {
+      cb(new Error("File type is not supported"), false);
+      return;
+    }
     cb(null, true);
-  } else {
-    cb("Please upload only images.", false);
-  }
-};
-
-var storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, __basedir + "/resources/static/assets/uploads/");
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-bezkoder-${file.originalname}`);
   },
 });
 
-var uploadFile = multer({ storage: storage, fileFilter: imageFilter });
-module.exports = uploadFile;
+//image resizing
+const profilePhotoResize = async (req, res, next) => {
+  //check if there no file to resize
+
+  if (!req.file) return next();
+  req.file.filename = `user-${Date.now()}-${req.file.originalname}`;
+
+  await sharp(req.file.buffer)
+    .resize(950, 750)
+    .toFormat("jpeg")
+    .jpeg({
+      quality: 90,
+    })
+    .toFile(path.join(`public/data/photo/${req.file.filename}`));
+  next();
+};
+
+//Post image resizing
+const postImgResize = async (req, res, next) => {
+  //check if there no file to resize
+  if (!req.file) return next();
+  req.file.filename = `user-${Date.now()}-${req.file.originalname}`;
+
+  await sharp(req.file)
+    .resize(500, 500)
+    .toFormat("jpeg")
+    .jpeg({
+      quality: 90,
+    })
+    .toFile(path.join(`public/data/photo/${req.file.filename}`));
+
+  next();
+};
+
+module.exports = {
+  photoUpload,
+  profilePhotoResize,
+  postImgResize,
+};
